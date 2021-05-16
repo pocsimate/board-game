@@ -1,5 +1,8 @@
 package boardgame.model;
 
+import javafx.beans.property.ObjectProperty;
+import org.tinylog.Logger;
+
 import java.util.*;
 
 public class BoardGame {
@@ -8,7 +11,8 @@ public class BoardGame {
     private static final int BOARD_SIZE_COLNUM = 7;
 
     private ArrayList<ArrayList<Piece>> pieces = new ArrayList<ArrayList<Piece>>();
-    int activePlayer = 0;
+    private Block[] blocks = new Block[2];
+    int activePlayer;
 
     public BoardGame() {
         Piece[] top = new Piece[BOARD_SIZE_COLNUM];
@@ -23,17 +27,36 @@ public class BoardGame {
         Collections.addAll(playerOne, top);
         Collections.addAll(playerTwo,bottom);
 
+        this.blocks[0] = new Block(new Position(2,4), "Black");
+        this.blocks[1] = new Block(new Position(3,2), "Black");
+
         this.pieces.add(playerOne);
         this.pieces.add(playerTwo);
         this.activePlayer = 0;
     }
+    public List<Position> getPiecePositions() {
+        List<Position> positions = new ArrayList<>();
+        for (var piece : pieces.get(activePlayer)) {
+            positions.add(piece.getPosition());
+        }
+        Logger.warn("POSITIONS: {}", positions);
+        return positions;
+    }
 
     public Position getPiecePosition(int player, int index) {
-        return pieces.get(player).get(index).getPosition(); // pieces[pieceNumber].getPosition();
+        return pieces.get(player).get(index).getPosition();
+    }
+
+    public ObjectProperty<Position> positionProperty(int player, int pieceNumber) {
+        return pieces.get(player).get(pieceNumber).positionProperty();
     }
 
     public PieceType getPieceType(int player ,int index) {
         return pieces.get(player).get(index).getType();
+    }
+
+    public String getPieceColor(int player ,int index) {
+        return getPieceType(player, index).getLabel();
     }
 
     public int getPieceSize(){
@@ -44,12 +67,71 @@ public class BoardGame {
         return pieces.get(player).size();
     }
 
+    public boolean isValidMove(int pieceNumber, Direction direction) {
+        if (pieceNumber < 0 || pieceNumber >= pieces.get(activePlayer).size()) {
+            Logger.warn("Dangerous move my friend");
+            throw new IllegalArgumentException();
+        }
+
+        Position newPosition = pieces.get(activePlayer).get(pieceNumber).getPosition().moveTo(direction);
+
+        if (! isOnBoard(newPosition)) {
+            return false;
+        }
+        // TODO: keresztlepes
+
+        for (var block : blocks){
+            if (block.getPosition().equals(newPosition)){
+                return false;
+            }
+        }
+
+        for (var piece : pieces.get(activePlayer)) {
+            if (piece.getPosition().equals(newPosition)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean isOnBoard(Position position) {
+        return 0 <= position.row() && position.row() < BOARD_SIZE_ROWNUM
+                && 0 <= position.col() && position.col() < BOARD_SIZE_COLNUM;
+    }
+
+    public Set<Direction> getValidMoves(int pieceNumber) {
+        EnumSet<Direction> validMoves = EnumSet.noneOf(Direction.class);
+        for (var direction : pieces.get(activePlayer).get(pieceNumber).getValidDirections()) {
+            if (isValidMove(pieceNumber, direction)) {
+                validMoves.add(direction);
+            }
+        }
+        return validMoves;
+    }
+
+    public OptionalInt getPieceNumber(Position position) {
+        for (int i = 0; i < pieces.get(activePlayer).size(); i++) {
+            if (pieces.get(activePlayer).get(i).getPosition().equals(position)) {
+                return OptionalInt.of(i);
+            }
+        }
+        return OptionalInt.empty();
+    }
+
+    public void move(int pieceNumber, Direction direction) {
+        pieces.get(activePlayer).get(pieceNumber).moveTo(direction);
+    }
+
     public String toString() {
         StringJoiner joiner = new StringJoiner(",", "[", "]");
         for (var row : pieces) {
             for (var item : row){
                 joiner.add(item.toString());
             }
+        }
+        for (var block : blocks){
+            joiner.add(block.toString());
         }
         return joiner.toString();
     }
@@ -79,8 +161,8 @@ public class BoardGame {
 
         System.out.println(pieces);
 
-        int activePlayer=1;
-        pieces.get(activePlayer).remove(opponent[0]);
+        int activePlayer=0;
+        System.out.println(pieces.get(activePlayer).get(1).getValidDirections().contains(Direction.UP_LEFT));
 
         System.out.println(pieces);
         System.out.println(pieces.get(0).size());

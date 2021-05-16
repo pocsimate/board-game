@@ -1,21 +1,16 @@
-package model;
+package boardgame.model;
 
 public enum PieceType {
-    UP,
-    DOWN;
+    UP("red"),
+    DOWN("blue");
 
-//    public String getPieceType() {
-//        return switch (this) {
-//            case RED -> "red";
-//            case BLUE -> "blue";
-//        };
-//    }
+    private final String label;
 
-//    public static void main(String[] args) {
-//        PieceType pt = PieceType.BLUE;
-//        PieceType pt2 = PieceType.RED;
-//
-//        System.out.println(pt.getPieceType());
-//        System.out.println(pt2.getPieceType());
-//    }
+    PieceType(String s) {
+        this.label = s;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }

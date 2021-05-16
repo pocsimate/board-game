@@ -1,4 +1,4 @@
-package model;
+package boardgame.model;
 
 public enum Direction {
 
@@ -9,8 +9,8 @@ public enum Direction {
     DOWN(1, 0),
     DOWN_LEFT(1, -1);
 
-    private final int rowChange;
-    private final int colChange;
+    private int rowChange;
+    private int colChange;
 
     Direction(int rowChange, int colChange) {
         this.rowChange = rowChange;

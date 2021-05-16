@@ -1,14 +1,6 @@
-package model;
+package boardgame.model;
 
-public class Position {
-
-    public int row;
-    public int col;
-
-    public Position(int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
+public record Position(int row, int col) {
 
     public Position moveTo(Direction direction) {
         return new Position(row + direction.getRowChange(), col + direction.getColChange());
@@ -18,11 +10,4 @@ public class Position {
         return String.format("(%d,%d)", row, col);
     }
 
-    public int getRow() {
-        return row;
-    }
-
-    public int getCol() {
-        return col;
-    }
 }

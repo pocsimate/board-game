@@ -1,17 +1,32 @@
-package model;
+package boardgame.model;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
 public class Piece {
 
     private PieceType type;
-    private Position position;
+    private final ObjectProperty<Position> position = new SimpleObjectProperty<>();
 
-    public void move(Direction direction){
-        this.position = this.position.moveTo(direction);
+    public Piece(PieceType type, Position position) {
+        this.type = type;
+        this.position.set(position);
+    }
+
+    public void moveTo(Direction direction) {
+        Position newPosition = position.get().moveTo(direction);
+        position.set(newPosition);
+    }
+    public List<Direction> getValidDirections(){
+        return switch (this.type){
+            case UP -> new ArrayList<Direction>(Arrays.asList(Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT));
+            case DOWN -> new ArrayList<Direction>(Arrays.asList(Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT));
+        };
     }
 
     public PieceType getType() {
@@ -19,21 +34,15 @@ public class Piece {
     }
 
     public Position getPosition() {
+        return position.get();
+    }
+
+    public ObjectProperty<Position> positionProperty() {
         return position;
     }
 
     public String toString() {
-        return type.toString() + position.toString();
+        return type.toString() + position.get().toString();
     }
 
-//    public static void main(String[] args) {
-//        Piece piece = new Piece(PieceType.BLUE, new Position(5,5));
-//        piece.move(Direction.of(-1,1));
-//        System.out.println(piece);
-//
-//        if (piece.pieceType.getPieceType().equals("blue")){
-//            piece.move(Direction.UP_LEFT);
-//            System.out.println(piece);
-//        }
-//    }
 }
