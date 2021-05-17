@@ -47,6 +47,7 @@ public class BoardGameController {
         createBlocks();
         setSelectablePositions();
         showSelectablePositions();
+        setGameWonState();
     }
 
     private void createBlocks(){
@@ -59,7 +60,6 @@ public class BoardGameController {
     private void createBoard() {
         for (int i = 0; i < board.getRowCount(); i++) {
             for (int j = 0; j < board.getColumnCount(); j++) {
-                Logger.debug("i: {}, j: {}", i,j);
                 var square = createSquare();
                 board.add(square, j, i);
             }
@@ -87,6 +87,15 @@ public class BoardGameController {
         var piece = new Circle(30);
         piece.setFill(color);
         return piece;
+    }
+
+    public void setGameWonState(){
+        model.getIsWon().addListener(this::handleWon);
+    }
+
+    private void handleWon(ObservableValue<? extends Boolean> observable, Boolean oldState, Boolean newState){
+        if (newState)
+            Logger.warn("Game won by: {}", model.toggleActivePlayer());
     }
 
     @FXML
@@ -189,6 +198,7 @@ public class BoardGameController {
         Logger.debug("Move: {} -> {}", oldPosition, newPosition);
         StackPane oldSquare = getSquare(oldPosition);
         StackPane newSquare = getSquare(newPosition);
+        newSquare.getChildren().clear();
         newSquare.getChildren().addAll(oldSquare.getChildren());
         oldSquare.getChildren().clear();
     }

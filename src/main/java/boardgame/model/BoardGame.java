@@ -1,6 +1,7 @@
 package boardgame.model;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import org.tinylog.Logger;
 
 import java.util.*;
@@ -12,7 +13,8 @@ public class BoardGame {
 
     private ArrayList<ArrayList<Piece>> pieces = new ArrayList<ArrayList<Piece>>();
     public Block[] blocks = new Block[2];
-    int activePlayer;
+    public int activePlayer;
+    private final ObjectProperty<Boolean> isWon = new SimpleObjectProperty<>();
 
     public BoardGame() {
         Piece[] top = new Piece[BOARD_SIZE_COLNUM];
@@ -32,6 +34,7 @@ public class BoardGame {
 
         this.pieces.add(playerOne);
         this.pieces.add(playerTwo);
+        this.isWon.set(Boolean.FALSE);
         this.activePlayer = 0;
     }
     public List<Position> getPiecePositions() {
@@ -65,6 +68,10 @@ public class BoardGame {
 
     public int getPieceCount(int player) {
         return pieces.get(player).size();
+    }
+
+    public ObjectProperty<Boolean> getIsWon(){
+        return isWon;
     }
 
     public boolean isValidMove(int pieceNumber, Direction direction) {
@@ -120,6 +127,23 @@ public class BoardGame {
         checkForOverlap(pieceNumber, direction);
         pieces.get(activePlayer).get(pieceNumber).moveTo(direction);
         activePlayer = toggleActivePlayer();
+        if(isWonState()){
+            getIsWon().set(Boolean.TRUE);
+        }
+    }
+
+    public boolean isWonState(){
+        return (pieces.get(activePlayer).isEmpty() || hasNoAvailableStep(activePlayer));
+    }
+
+    public boolean hasNoAvailableStep(int player) {
+        for (int i = 0; i < getPieceCount(player); i++) {
+            Set<Direction> validDirections = getValidMoves(i);
+            if (!validDirections.isEmpty()){
+                return false;
+            }
+        }
+        return true;
     }
 
     public void checkForOverlap(int pieceNumber, Direction direction){
