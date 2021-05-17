@@ -13,3 +13,7 @@
 .square:hover {
     -fx-background-color: ghostwhite;
 }
+
+.block, .block:hover {
+    -fx-background-color: black;
+}

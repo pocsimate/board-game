@@ -1,7 +1,6 @@
 package boardgame.controller;
 
 import boardgame.model.Direction;
-import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
@@ -45,8 +44,16 @@ public class BoardGameController {
     private void initialize() {
         createBoard();
         createPieces();
+        createBlocks();
         setSelectablePositions();
         showSelectablePositions();
+    }
+
+    private void createBlocks(){
+        for (var block : model.blocks){
+            var square = getSquare(block.getPosition());
+            square.getStyleClass().add("block");
+        }
     }
 
     private void createBoard() {

@@ -11,7 +11,7 @@ public class BoardGame {
     private static final int BOARD_SIZE_COLNUM = 7;
 
     private ArrayList<ArrayList<Piece>> pieces = new ArrayList<ArrayList<Piece>>();
-    private Block[] blocks = new Block[2];
+    public Block[] blocks = new Block[2];
     int activePlayer;
 
     public BoardGame() {
@@ -27,8 +27,8 @@ public class BoardGame {
         Collections.addAll(playerOne, top);
         Collections.addAll(playerTwo,bottom);
 
-        this.blocks[0] = new Block(new Position(2,4), "Black");
-        this.blocks[1] = new Block(new Position(3,2), "Black");
+        this.blocks[0] = new Block(new Position(2,4));
+        this.blocks[1] = new Block(new Position(3,2));
 
         this.pieces.add(playerOne);
         this.pieces.add(playerTwo);
