@@ -62,14 +62,14 @@ public class BoardGame {
         var seen = new HashSet<Position>();
         for (var outer : pieces){
             for (var inner : outer){
-                if(! isOnBoard(inner.getPosition()) || seen.contains(inner.getPosition())){
+                if(isNotOnBoard(inner.getPosition()) || seen.contains(inner.getPosition())){
                     throw new IllegalArgumentException();
                 }
                 seen.add(inner.getPosition());
             }
         }
         for (var block : blocks){
-            if (! isOnBoard(block.getPosition()) || seen.contains(block.getPosition())){
+            if (isNotOnBoard(block.getPosition()) || seen.contains(block.getPosition())){
                 throw new IllegalArgumentException();
             }
             seen.add(block.getPosition());
@@ -120,7 +120,7 @@ public class BoardGame {
 
         Position newPosition = pieces.get(activePlayer).get(pieceNumber).getPosition().moveTo(direction);
 
-        if (! isOnBoard(newPosition)) {
+        if (isNotOnBoard(newPosition)) {
             return false;
         }
 
@@ -147,9 +147,9 @@ public class BoardGame {
         return true;
     }
 
-    public static boolean isOnBoard(Position position) {
-        return 0 <= position.row() && position.row() < BOARD_SIZE_NUMBER_OF_ROWS
-                && 0 <= position.col() && position.col() < BOARD_SIZE_NUMBER_OF_COLUMNS;
+    public static boolean isNotOnBoard(Position position) {
+        return 0 > position.row() || position.row() >= BOARD_SIZE_NUMBER_OF_ROWS
+                || 0 > position.col() || position.col() >= BOARD_SIZE_NUMBER_OF_COLUMNS;
     }
 
     public Set<Direction> getValidMoves(int pieceNumber) {
