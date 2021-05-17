@@ -25,7 +25,7 @@ class PositionTest {
     }
     @Test
     void testEquals(){
-        assertTrue(position.equals(new Position(3,3)));
+        assertEquals(position, new Position(3, 3));
     }
 
     @Test
