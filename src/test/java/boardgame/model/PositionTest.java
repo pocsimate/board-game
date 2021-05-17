@@ -23,9 +23,15 @@ class PositionTest {
         assertEquals(new Position(4, 2), position.moveTo(Direction.DOWN_LEFT));
         assertEquals(new Position(4, 4), position.moveTo(Direction.DOWN_RIGHT));
     }
+    @Test
+    void testEquals(){
+        assertTrue(position.equals(new Position(3,3)));
+    }
 
     @Test
     void testToString(){
         assertEquals("(3,3)", position.toString());
     }
+
+
 }
