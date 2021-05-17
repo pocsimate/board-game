@@ -1,22 +1,19 @@
 package boardgame.model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-
 public class Block {
 
-    private final ObjectProperty<Position> position = new SimpleObjectProperty<>();
+    Position position;
 
     public Block(Position position){
-        this.position.set(position);
+        this.position = position;
     }
 
     public Position getPosition() {
-        return position.get();
+        return position;
     }
 
     public String toString() {
-        return position.get().toString();
+        return "Block" + position.toString();
     }
 
 }
