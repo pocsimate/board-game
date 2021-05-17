@@ -69,7 +69,6 @@ public class BoardGame {
 
     public boolean isValidMove(int pieceNumber, Direction direction) {
         if (pieceNumber < 0 || pieceNumber >= pieces.get(activePlayer).size()) {
-            Logger.warn("Dangerous move my friend");
             throw new IllegalArgumentException();
         }
 
@@ -78,11 +77,18 @@ public class BoardGame {
         if (! isOnBoard(newPosition)) {
             return false;
         }
-        // TODO: keresztlepes
 
         for (var block : blocks){
             if (block.getPosition().equals(newPosition)){
                 return false;
+            }
+        }
+
+        if (direction.equals(Direction.DOWN) || direction.equals(Direction.UP)){
+            for (var piece : pieces.get(toggleActivePlayer())){
+                if (piece.getPosition().equals(newPosition)) {
+                    return false;
+                }
             }
         }
 
@@ -110,6 +116,27 @@ public class BoardGame {
         return validMoves;
     }
 
+    public void move(int pieceNumber, Direction direction) {
+        checkForOverlap(pieceNumber, direction);
+        pieces.get(activePlayer).get(pieceNumber).moveTo(direction);
+        activePlayer = toggleActivePlayer();
+    }
+
+    public void checkForOverlap(int pieceNumber, Direction direction){
+        Position newPosition = pieces.get(activePlayer).get(pieceNumber).getPosition().moveTo(direction);
+
+        for (var piece : pieces.get(toggleActivePlayer())){
+            if (piece.getPosition().equals(newPosition)) {
+                deletePiece(toggleActivePlayer(), piece);
+                break;
+            }
+        }
+    }
+
+    public void deletePiece(int player, Piece piece){
+        pieces.get(player).remove(piece);
+    }
+
     public OptionalInt getPieceNumber(Position position) {
         for (int i = 0; i < pieces.get(activePlayer).size(); i++) {
             if (pieces.get(activePlayer).get(i).getPosition().equals(position)) {
@@ -119,8 +146,12 @@ public class BoardGame {
         return OptionalInt.empty();
     }
 
-    public void move(int pieceNumber, Direction direction) {
-        pieces.get(activePlayer).get(pieceNumber).moveTo(direction);
+    public int toggleActivePlayer(){
+        return switch (activePlayer){
+            case 0 -> 1;
+            case 1 -> 0;
+            default -> throw new IllegalStateException("Unexpected value: " + activePlayer);
+        };
     }
 
     public String toString() {
@@ -137,10 +168,10 @@ public class BoardGame {
     }
 
     public static void main(String[] args) {
-        BoardGame boardGame = new BoardGame();
-        System.out.println(boardGame);
-
-        System.out.println(boardGame.getPieceCount(0));
+//        BoardGame boardGame = new BoardGame();
+//        System.out.println(boardGame);
+//
+//        System.out.println(boardGame.getPieceCount(0));
 
         ArrayList<ArrayList<Piece>> pieces = new ArrayList<ArrayList<Piece>>();
 
@@ -161,10 +192,13 @@ public class BoardGame {
 
         System.out.println(pieces);
 
-        int activePlayer=0;
-        System.out.println(pieces.get(activePlayer).get(1).getValidDirections().contains(Direction.UP_LEFT));
-
+        pieces.get(0).remove(friend[0]);
         System.out.println(pieces);
-        System.out.println(pieces.get(0).size());
+
+//        int activePlayer=0;
+//        System.out.println(pieces.get(activePlayer).get(1).getValidDirections().contains(Direction.UP_LEFT));
+//
+//        System.out.println(pieces);
+//        System.out.println(pieces.get(0).size());
     }
 }

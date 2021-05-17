@@ -1,6 +1,7 @@
 package boardgame.controller;
 
 import boardgame.model.Direction;
+import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
@@ -184,4 +185,9 @@ public class BoardGameController {
         newSquare.getChildren().addAll(oldSquare.getChildren());
         oldSquare.getChildren().clear();
     }
+
+//    public static void main(String[] args) {
+//        BoardGameController ctrl = new BoardGameController();
+//        ctrl.model.
+//    }
 }

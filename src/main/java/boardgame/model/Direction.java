@@ -33,4 +33,10 @@ public enum Direction {
         }
         throw new IllegalArgumentException();
     }
+
+    public static void main(String[] args) {
+        Direction direction = Direction.of(-1,0);
+        Direction direction1 = Direction.UP_LEFT;
+        System.out.println(direction1.equals(direction));
+    }
 }
