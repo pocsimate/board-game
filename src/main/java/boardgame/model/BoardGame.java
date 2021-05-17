@@ -8,19 +8,19 @@ import java.util.*;
 
 public class BoardGame {
 
-    private static final int BOARD_SIZE_ROWNUM = 6;
-    private static final int BOARD_SIZE_COLNUM = 7;
+    private static final int BOARD_SIZE_NUMBER_OF_ROWS = 6;
+    private static final int BOARD_SIZE_NUMBER_OF_COLUMNS = 7;
 
     private final ObjectProperty<Boolean> isWon = new SimpleObjectProperty<>();
-    private ArrayList<ArrayList<Piece>> pieces;
+    private final ArrayList<ArrayList<Piece>> pieces;
     public int activePlayer;
     public Block[] blocks;
 
     public BoardGame() {
         this(
-            new ArrayList<ArrayList<Piece>>() {{
+            new ArrayList<>() {{
                 add(
-                    new ArrayList<Piece>() {{
+                    new ArrayList<>() {{
                         add(new Piece(PieceType.UP, new Position(0, 0)));
                         add(new Piece(PieceType.UP, new Position(0, 1)));
                         add(new Piece(PieceType.UP, new Position(0, 2)));
@@ -31,7 +31,7 @@ public class BoardGame {
                     }}
                 );
                 add(
-                    new ArrayList<Piece>() {{
+                    new ArrayList<>() {{
                         add(new Piece(PieceType.DOWN, new Position(5, 0)));
                         add(new Piece(PieceType.DOWN, new Position(5, 1)));
                         add(new Piece(PieceType.DOWN, new Position(5, 2)));
@@ -50,7 +50,7 @@ public class BoardGame {
     }
 
     public BoardGame(ArrayList<ArrayList<Piece>> pieces, Block[] blocks){
-        this.pieces = (ArrayList<ArrayList<Piece>>) pieces.clone();
+        this.pieces = new ArrayList<>(pieces);
         this.blocks = blocks.clone();
         this.isWon.set(Boolean.FALSE);
         this.activePlayer = 0;
@@ -128,8 +128,8 @@ public class BoardGame {
     }
 
     public static boolean isOnBoard(Position position) {
-        return 0 <= position.row() && position.row() < BOARD_SIZE_ROWNUM
-                && 0 <= position.col() && position.col() < BOARD_SIZE_COLNUM;
+        return 0 <= position.row() && position.row() < BOARD_SIZE_NUMBER_OF_ROWS
+                && 0 <= position.col() && position.col() < BOARD_SIZE_NUMBER_OF_COLUMNS;
     }
 
     public Set<Direction> getValidMoves(int pieceNumber) {

@@ -9,8 +9,8 @@ public enum Direction {
     DOWN(1, 0),
     DOWN_LEFT(1, -1);
 
-    private int rowChange;
-    private int colChange;
+    private final int rowChange;
+    private final int colChange;
 
     Direction(int rowChange, int colChange) {
         this.rowChange = rowChange;
@@ -36,7 +36,6 @@ public enum Direction {
 
     public static void main(String[] args) {
         Direction direction = Direction.of(-1,0);
-        Direction direction1 = Direction.UP_LEFT;
-        System.out.println(direction1.equals(direction));
+        System.out.println(Direction.UP_LEFT.equals(direction));
     }
 }

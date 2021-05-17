@@ -94,8 +94,11 @@ public class BoardGameController {
     }
 
     private void handleWon(ObservableValue<? extends Boolean> observable, Boolean oldState, Boolean newState){
-        if (newState)
+        if (newState){
             Logger.warn("Game won by: {}", model.toggleActivePlayer());
+            hideSelectedPosition();
+            hideSelectablePositions();
+        }
     }
 
     @FXML
@@ -202,9 +205,4 @@ public class BoardGameController {
         newSquare.getChildren().addAll(oldSquare.getChildren());
         oldSquare.getChildren().clear();
     }
-
-//    public static void main(String[] args) {
-//        BoardGameController ctrl = new BoardGameController();
-//        ctrl.model.
-//    }
 }

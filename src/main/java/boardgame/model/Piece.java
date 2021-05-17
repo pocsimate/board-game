@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Piece {
 
-    private PieceType type;
+    private final PieceType type;
     private final ObjectProperty<Position> position = new SimpleObjectProperty<>();
 
     public Piece(PieceType type, Position position) {
@@ -24,8 +24,8 @@ public class Piece {
     }
     public List<Direction> getValidDirections(){
         return switch (this.type){
-            case UP -> new ArrayList<Direction>(Arrays.asList(Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT));
-            case DOWN -> new ArrayList<Direction>(Arrays.asList(Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT));
+            case UP -> new ArrayList<>(Arrays.asList(Direction.DOWN, Direction.DOWN_LEFT, Direction.DOWN_RIGHT));
+            case DOWN -> new ArrayList<>(Arrays.asList(Direction.UP, Direction.UP_LEFT, Direction.UP_RIGHT));
         };
     }
 
