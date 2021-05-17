@@ -50,10 +50,30 @@ public class BoardGame {
     }
 
     public BoardGame(ArrayList<ArrayList<Piece>> pieces, Block[] blocks){
+        checkPositions(pieces, blocks);
         this.pieces = new ArrayList<>(pieces);
         this.blocks = blocks.clone();
         this.isWon.set(Boolean.FALSE);
         this.activePlayer = 0;
+    }
+
+    private void checkPositions(ArrayList<ArrayList<Piece>> pieces, Block[] blocks){
+        Logger.debug("checkPositions running");
+        var seen = new HashSet<Position>();
+        for (var outer : pieces){
+            for (var inner : outer){
+                if(! isOnBoard(inner.getPosition()) || seen.contains(inner.getPosition())){
+                    throw new IllegalArgumentException();
+                }
+                seen.add(inner.getPosition());
+            }
+        }
+        for (var block : blocks){
+            if (! isOnBoard(block.getPosition()) || seen.contains(block.getPosition())){
+                throw new IllegalArgumentException();
+            }
+            seen.add(block.getPosition());
+        }
     }
 
     public List<Position> getPiecePositions() {
