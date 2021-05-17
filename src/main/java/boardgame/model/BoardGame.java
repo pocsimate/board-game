@@ -11,38 +11,57 @@ public class BoardGame {
     private static final int BOARD_SIZE_ROWNUM = 6;
     private static final int BOARD_SIZE_COLNUM = 7;
 
-    private ArrayList<ArrayList<Piece>> pieces = new ArrayList<ArrayList<Piece>>();
-    public Block[] blocks = new Block[2];
-    public int activePlayer;
     private final ObjectProperty<Boolean> isWon = new SimpleObjectProperty<>();
+    private ArrayList<ArrayList<Piece>> pieces;
+    public int activePlayer;
+    public Block[] blocks;
 
     public BoardGame() {
-        Piece[] top = new Piece[BOARD_SIZE_COLNUM];
-        Piece[] bottom = new Piece[BOARD_SIZE_COLNUM];
-        for (int i = 0; i < BOARD_SIZE_COLNUM; i++) {
-            top[i] = new Piece(PieceType.UP, new Position(0, i));
-            bottom[i] = new Piece(PieceType.DOWN, new Position(5, i));
-        }
-        ArrayList<Piece> playerOne = new ArrayList<>();
-        ArrayList<Piece> playerTwo = new ArrayList<>();
+        this(
+            new ArrayList<ArrayList<Piece>>() {{
+                add(
+                    new ArrayList<Piece>() {{
+                        add(new Piece(PieceType.UP, new Position(0, 0)));
+                        add(new Piece(PieceType.UP, new Position(0, 1)));
+                        add(new Piece(PieceType.UP, new Position(0, 2)));
+                        add(new Piece(PieceType.UP, new Position(0, 3)));
+                        add(new Piece(PieceType.UP, new Position(0, 4)));
+                        add(new Piece(PieceType.UP, new Position(0, 5)));
+                        add(new Piece(PieceType.UP, new Position(0, 6)));
+                    }}
+                );
+                add(
+                    new ArrayList<Piece>() {{
+                        add(new Piece(PieceType.DOWN, new Position(5, 0)));
+                        add(new Piece(PieceType.DOWN, new Position(5, 1)));
+                        add(new Piece(PieceType.DOWN, new Position(5, 2)));
+                        add(new Piece(PieceType.DOWN, new Position(5, 3)));
+                        add(new Piece(PieceType.DOWN, new Position(5, 4)));
+                        add(new Piece(PieceType.DOWN, new Position(5, 5)));
+                        add(new Piece(PieceType.DOWN, new Position(5, 6)));
+                    }}
+                );
+            }},
+            new Block[] {
+                    new Block(new Position(3,2)),
+                    new Block(new Position(2,4))
+            }
+        );
+    }
 
-        Collections.addAll(playerOne, top);
-        Collections.addAll(playerTwo,bottom);
-
-        this.blocks[0] = new Block(new Position(2,4));
-        this.blocks[1] = new Block(new Position(3,2));
-
-        this.pieces.add(playerOne);
-        this.pieces.add(playerTwo);
+    public BoardGame(ArrayList<ArrayList<Piece>> pieces, Block[] blocks){
+        this.pieces = (ArrayList<ArrayList<Piece>>) pieces.clone();
+        this.blocks = blocks.clone();
         this.isWon.set(Boolean.FALSE);
         this.activePlayer = 0;
     }
+
     public List<Position> getPiecePositions() {
         List<Position> positions = new ArrayList<>();
         for (var piece : pieces.get(activePlayer)) {
             positions.add(piece.getPosition());
         }
-        Logger.warn("POSITIONS: {}", positions);
+        Logger.info("POSITIONS: {}", positions);
         return positions;
     }
 
@@ -192,37 +211,10 @@ public class BoardGame {
     }
 
     public static void main(String[] args) {
-//        BoardGame boardGame = new BoardGame();
-//        System.out.println(boardGame);
-//
-//        System.out.println(boardGame.getPieceCount(0));
+        BoardGame boardGame = new BoardGame();
+        System.out.println(boardGame);
 
-        ArrayList<ArrayList<Piece>> pieces = new ArrayList<ArrayList<Piece>>();
+        System.out.println(boardGame.getPieceCount(0));
 
-        ArrayList<Piece> playerOne = new ArrayList<Piece>();
-        Piece[] friend = new Piece[2];
-        friend[0] = new Piece(PieceType.DOWN, new Position(0,0));
-        friend[1] = new Piece(PieceType.DOWN, new Position(0,1));
-        Collections.addAll(playerOne,friend);
-
-        ArrayList<Piece> playerTwo = new ArrayList<Piece>();
-        Piece[] opponent = new Piece[2];
-        opponent[0] = new Piece(PieceType.UP, new Position(BOARD_SIZE_ROWNUM,0));
-        opponent[1] = new Piece(PieceType.UP, new Position(BOARD_SIZE_ROWNUM,1));
-        Collections.addAll(playerTwo,opponent);
-
-        pieces.add(playerOne);
-        pieces.add(playerTwo);
-
-        System.out.println(pieces);
-
-        pieces.get(0).remove(friend[0]);
-        System.out.println(pieces);
-
-//        int activePlayer=0;
-//        System.out.println(pieces.get(activePlayer).get(1).getValidDirections().contains(Direction.UP_LEFT));
-//
-//        System.out.println(pieces);
-//        System.out.println(pieces.get(0).size());
     }
 }
