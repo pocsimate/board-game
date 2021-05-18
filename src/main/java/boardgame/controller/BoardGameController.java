@@ -1,6 +1,9 @@
 package boardgame.controller;
 
 import boardgame.model.Direction;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
@@ -10,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import boardgame.model.BoardGame;
 import boardgame.model.Position;
+import javafx.scene.text.Text;
 import org.tinylog.Logger;
 
 import java.util.ArrayList;
@@ -31,6 +35,8 @@ public class BoardGameController {
 
     private SelectionPhase selectionPhase = SelectionPhase.SELECT_FROM;
 
+    private final String[] playerNames = new String[2];
+
     private List<Position> selectablePositions = new ArrayList<>();
 
     private Position selected;
@@ -41,6 +47,12 @@ public class BoardGameController {
     private GridPane board;
 
     @FXML
+    private Text player0;
+
+    @FXML
+    private Text player1;
+
+    @FXML
     private void initialize() {
         createBoard();
         createPieces();
@@ -48,6 +60,15 @@ public class BoardGameController {
         setSelectablePositions();
         showSelectablePositions();
         setGameWonState();
+        Platform.runLater(() -> {
+            this.player0.setText(playerNames[0]);
+            this.player1.setText(playerNames[1]);
+        });
+    }
+
+    public void setNames(String playerOne, String playerTwo){
+        playerNames[0] = playerOne;
+        playerNames[1] = playerTwo;
     }
 
     private void createBlocks(){
@@ -95,7 +116,8 @@ public class BoardGameController {
 
     private void handleWon(ObservableValue<? extends Boolean> observable, Boolean oldState, Boolean newState){
         if (newState){
-            Logger.warn("Game won by: {}", model.toggleActivePlayer());
+            Logger.warn("Game won by: {}, against: {}",
+                    playerNames[model.toggleActivePlayer()], playerNames[model.activePlayer]);
             hideSelectedPosition();
             hideSelectablePositions();
         }
