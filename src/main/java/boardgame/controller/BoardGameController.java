@@ -1,11 +1,16 @@
 package boardgame.controller;
 
 import boardgame.model.Direction;
+import boardgame.result.Result;
+import boardgame.result.ResultAccessor;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -14,8 +19,12 @@ import javafx.scene.shape.Circle;
 import boardgame.model.BoardGame;
 import boardgame.model.Position;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import org.tinylog.Logger;
 
+import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +44,8 @@ public class BoardGameController {
 
     private SelectionPhase selectionPhase = SelectionPhase.SELECT_FROM;
 
+    private boolean isGameWon = false;
+
     private final String[] playerNames = new String[2];
 
     private List<Position> selectablePositions = new ArrayList<>();
@@ -53,17 +64,41 @@ public class BoardGameController {
     private Text player1;
 
     @FXML
+    private Text winnerText;
+
+    @FXML
     private void initialize() {
         createBoard();
         createPieces();
         createBlocks();
         setSelectablePositions();
         showSelectablePositions();
-        setGameWonState();
+        model.getIsWon().addListener(this::handleWon);
         Platform.runLater(() -> {
             this.player0.setText(playerNames[0]);
             this.player1.setText(playerNames[1]);
         });
+    }
+
+    @FXML
+    private void resetGame(){
+        selectionPhase = SelectionPhase.SELECT_FROM;
+        board.getChildren().clear();
+        isGameWon = false;
+        winnerText.setText("");
+        model = new BoardGame();
+        initialize();
+    }
+
+    @FXML
+    private void showStatistics(ActionEvent event) throws IOException {
+        if(isGameWon){
+            FXMLLoader fxmlLoader = new FXMLLoader(ResultController.class.getResource("/resultUi.fxml"));
+            Parent root = fxmlLoader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
     }
 
     public void setNames(String playerOne, String playerTwo){
@@ -110,16 +145,19 @@ public class BoardGameController {
         return piece;
     }
 
-    public void setGameWonState(){
-        model.getIsWon().addListener(this::handleWon);
-    }
-
     private void handleWon(ObservableValue<? extends Boolean> observable, Boolean oldState, Boolean newState){
         if (newState){
             Logger.warn("Game won by: {}, against: {}",
                     playerNames[model.toggleActivePlayer()], playerNames[model.activePlayer]);
-            hideSelectedPosition();
+            winnerText.setText(playerNames[model.toggleActivePlayer()] + " won the match");
+            isGameWon = true;
             hideSelectablePositions();
+            ResultAccessor resultAccessor = new ResultAccessor();
+            resultAccessor.insertResult(Result.builder()
+                    .winner(playerNames[model.toggleActivePlayer()])
+                    .opponent(playerNames[model.activePlayer])
+                    .date(Date.valueOf(LocalDate.now()))
+                    .build());
         }
     }
 
