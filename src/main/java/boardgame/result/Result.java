@@ -11,6 +11,9 @@ import java.sql.Date;
 @AllArgsConstructor
 @Data
 @Builder
+/**
+ * The class represents information of what gets stored in the database.
+ */
 public class Result {
 
     Long id;

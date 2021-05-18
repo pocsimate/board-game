@@ -8,6 +8,9 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.tinylog.Logger;
 import java.util.List;
 
+/**
+ * The class that communicates directly with the database.
+ */
 public class ResultAccessor {
     private static Jdbi jdbi;
 
@@ -22,6 +25,11 @@ public class ResultAccessor {
         }
     }
 
+    /**
+     * Pushes the result of the game in the database
+     *
+     * @param result the result of the game
+     */
     public void insertResult(Result result){
         try( Handle handle = jdbi.open()) {
             ResultDao dao = handle.attach(ResultDao.class);
@@ -29,6 +37,9 @@ public class ResultAccessor {
         }
     }
 
+    /**
+     * Creates the table.
+     */
     public void createTable(){
         try( Handle handle = jdbi.open()) {
             ResultDao dao = handle.attach(ResultDao.class);
@@ -36,17 +47,13 @@ public class ResultAccessor {
         }
     }
 
+    /**
+     * {@return the information stored in the database}
+     */
     public List<Result> getResults(){
         try( Handle handle = jdbi.open()) {
             ResultDao dao = handle.attach(ResultDao.class);
             return dao.getResults();
-        }
-    }
-
-    public void deleteResults(){
-        try( Handle handle = jdbi.open()) {
-            ResultDao dao = handle.attach(ResultDao.class);
-            dao.deleteResults();
         }
     }
 

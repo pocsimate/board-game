@@ -9,6 +9,9 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import java.util.List;
 
 @RegisterBeanMapper(Result.class)
+/**
+ * The data access object.
+ */
 public interface ResultDao {
 
     @SqlUpdate("""
